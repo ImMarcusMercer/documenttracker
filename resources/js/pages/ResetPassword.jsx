@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { toast } from "sonner";
 import { Building2, CircleAlert } from "lucide-react";
 
@@ -80,8 +81,7 @@ export default function ResetPassword() {
 
             <div className="space-y-2">
               <Label>New password</Label>
-              <Input
-                type="password"
+              <PasswordInput
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="New password"
@@ -93,8 +93,7 @@ export default function ResetPassword() {
 
             <div className="space-y-2">
               <Label>Confirm new password</Label>
-              <Input
-                type="password"
+              <PasswordInput
                 value={passwordConfirmation}
                 onChange={(event) => setPasswordConfirmation(event.target.value)}
                 placeholder="Confirm new password"

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Select,
   SelectContent,
@@ -76,6 +77,7 @@ export default function UserManagement() {
   const [editForm, setEditForm] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
   const [touched, setTouched] = useState({});
+  const [submitErrors, setSubmitErrors] = useState({});
   const [isInviting, setIsInviting] = useState(false);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
   const [importFile, setImportFile] = useState(null);
@@ -192,9 +194,18 @@ export default function UserManagement() {
     };
   }, [editForm]);
 
-  const updateForm = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+  const updateForm = (key, value) => {
+    setForm((current) => ({ ...current, [key]: value }));
+    setSubmitErrors((current) => ({ ...current, [key]: undefined }));
+  };
   const markTouched = (key) => setTouched((current) => ({ ...current, [key]: true }));
-  const showError = (key) => touched[key] ? errors[key] : "";
+  const showError = (key) => {
+    if (submitErrors[key]) {
+      return submitErrors[key];
+    }
+
+    return touched[key] ? errors[key] : "";
+  };
 
   if (isCheckingAccess) {
     return <div className="p-4 sm:p-6 lg:p-8 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
@@ -212,6 +223,7 @@ export default function UserManagement() {
 
   const handleInvite = async (e) => {
     e.preventDefault();
+    setSubmitErrors({});
     setTouched({ fullName: true, email: true, password: true, role: true });
     const error = firstError(errors);
     if (error) {
@@ -222,8 +234,8 @@ export default function UserManagement() {
     setIsInviting(true);
     try {
       await base44.users.inviteUser({
-        full_name: form.fullName,
-        email: form.email,
+        full_name: form.fullName.trim(),
+        email: form.email.trim().toLowerCase(),
         password: form.password,
         role: form.role,
         section: mapRoleToSection(form.role),
@@ -236,6 +248,16 @@ export default function UserManagement() {
       setForm({ fullName: "", email: "", password: "", role: "", status: "active", mfaEnabled: false });
       setTouched({});
     } catch (error) {
+      const nextErrors = error.payload?.errors || {};
+      if (Object.keys(nextErrors).length > 0) {
+        setTouched({ fullName: true, email: true, password: true, role: true });
+        setSubmitErrors({
+          fullName: nextErrors.full_name?.[0],
+          email: nextErrors.email?.[0],
+          password: nextErrors.password?.[0],
+          role: nextErrors.role?.[0],
+        });
+      }
       toast.error(error.message || "Failed to create user.");
     } finally {
       setIsInviting(false);
@@ -434,7 +456,7 @@ export default function UserManagement() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
               <div className="space-y-2"><RequiredLabel required>Full Name</RequiredLabel><Input value={editForm.fullName} onChange={(e) => setEditForm((p) => ({ ...p, fullName: e.target.value }))} /><FieldError message={editErrors.fullName} /></div>
               <div className="space-y-2"><RequiredLabel required>Email</RequiredLabel><Input type="email" value={editForm.email} onChange={(e) => setEditForm((p) => ({ ...p, email: e.target.value }))} /><FieldError message={editErrors.email} /></div>
-              <div className="space-y-2"><Label>New Password (optional)</Label><Input type="password" value={editForm.password} onChange={(e) => setEditForm((p) => ({ ...p, password: e.target.value }))} placeholder="Leave blank to keep current" /><FieldError message={editErrors.password} /></div>
+              <div className="space-y-2"><Label>New Password (optional)</Label><PasswordInput value={editForm.password} onChange={(e) => setEditForm((p) => ({ ...p, password: e.target.value }))} placeholder="Leave blank to keep current" /><FieldError message={editErrors.password} /></div>
               <div className="space-y-2"><RequiredLabel required>Role</RequiredLabel><Select value={editForm.role} onValueChange={(value) => setEditForm((p) => ({ ...p, role: value, section: p.section || mapRoleToSection(value) }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{roleOptions.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent></Select></div>
               <div className="space-y-2"><Label>Section</Label><Input value={editForm.section} onChange={(e) => setEditForm((p) => ({ ...p, section: e.target.value.toUpperCase() }))} /></div>
               <div className="space-y-2"><Label>Status</Label><Select value={editForm.status} onValueChange={(value) => setEditForm((p) => ({ ...p, status: value }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">Active</SelectItem><SelectItem value="inactive">Inactive</SelectItem><SelectItem value="suspended">Suspended</SelectItem></SelectContent></Select></div>
@@ -451,7 +473,7 @@ export default function UserManagement() {
           <form onSubmit={handleInvite} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 items-start" noValidate>
             <div className="space-y-2 xl:col-span-2"><RequiredLabel htmlFor="fullName" required>Full Name</RequiredLabel><Input id="fullName" value={form.fullName} onChange={(e) => updateForm("fullName", e.target.value)} onBlur={() => markTouched("fullName")} aria-invalid={Boolean(showError("fullName"))} aria-describedby="fullName-error" placeholder="Juan Dela Cruz" className="h-12" /><FieldError id="fullName-error" message={showError("fullName")} /></div>
             <div className="space-y-2 xl:col-span-2"><RequiredLabel htmlFor="email" required>Email Address</RequiredLabel><Input id="email" type="email" value={form.email} onChange={(e) => updateForm("email", e.target.value)} onBlur={() => markTouched("email")} aria-invalid={Boolean(showError("email"))} aria-describedby="email-error" placeholder="user@example.com" className="h-12" /><FieldError id="email-error" message={showError("email")} /></div>
-            <div className="space-y-2 xl:col-span-2"><RequiredLabel htmlFor="password" required>Temporary Password</RequiredLabel><Input id="password" type="password" value={form.password} onChange={(e) => updateForm("password", e.target.value)} onBlur={() => markTouched("password")} aria-invalid={Boolean(showError("password"))} aria-describedby="password-error" placeholder="Min 8, mixed case, number, symbol" className="h-12" /><FieldError id="password-error" message={showError("password")} /></div>
+            <div className="space-y-2 xl:col-span-2"><RequiredLabel htmlFor="password" required>Temporary Password</RequiredLabel><PasswordInput id="password" value={form.password} onChange={(e) => updateForm("password", e.target.value)} onBlur={() => markTouched("password")} aria-invalid={Boolean(showError("password"))} aria-describedby="password-error" placeholder="Min 8, mixed case, number, symbol" className="h-12" /><FieldError id="password-error" message={showError("password")} /></div>
             <div className="space-y-2 xl:col-span-2"><RequiredLabel required>Role</RequiredLabel><Select value={form.role} onValueChange={(value) => { updateForm("role", value); markTouched("role"); }}><SelectTrigger className="h-12"><SelectValue placeholder="Select role..." /></SelectTrigger><SelectContent>{roleOptions.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent></Select><FieldError id="role-error" message={showError("role")} /></div>
             <div className="space-y-2"><Label className="text-base font-semibold">Status</Label><Select value={form.status} onValueChange={(value) => updateForm("status", value)}><SelectTrigger className="h-12"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="active">Active</SelectItem><SelectItem value="inactive">Inactive</SelectItem><SelectItem value="suspended">Suspended</SelectItem></SelectContent></Select></div>
             <label className="flex items-center gap-2 h-12 px-3 rounded-md border text-sm self-end"><input type="checkbox" checked={form.mfaEnabled} onChange={(event) => updateForm("mfaEnabled", event.target.checked)} /> MFA</label>

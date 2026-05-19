@@ -17,3 +17,35 @@
   [31m[1mLARAVEL[22m v12.59.0[39m  [2mplugin[22m [1mv3.1.0[22m
 
   [32m➜[39m  [1mAPP_URL[22m: [36mhttp://127.0.0.1:[1m8000[22m[39m
+[2m9:37:07 PM[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m9:37:07 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because vite config has changed
+[2m9:37:07 PM[22m [36m[1m[vite][22m[39m server restarted.
+
+  [31m[1mLARAVEL[22m v12.59.0[39m  [2mplugin[22m [1mv3.1.0[22m
+
+  [32m➜[39m  [1mAPP_URL[22m: [36mhttp://127.0.0.1:[1m8000[22m[39m
+[2m9:37:09 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [optimizer] bundling dependencies...
+[2m9:37:13 PM[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m9:37:14 PM[22m [36m[1m[vite][22m[39m server restarted.
+
+  [31m[1mLARAVEL[22m v12.59.0[39m  [2mplugin[22m [1mv3.1.0[22m
+
+  [32m➜[39m  [1mAPP_URL[22m: [36mhttp://127.0.0.1:[1m8000[22m[39m
+[2m9:45:20 PM[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m9:45:20 PM[22m [36m[1m[vite][22m[39m server restarted.
+
+  [31m[1mLARAVEL[22m v12.59.0[39m  [2mplugin[22m [1mv3.1.0[22m
+
+  [32m➜[39m  [1mAPP_URL[22m: [36mhttp://127.0.0.1:[1m8000[22m[39m
+[2m9:45:42 PM[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m9:45:42 PM[22m [36m[1m[vite][22m[39m server restarted.
+
+  [31m[1mLARAVEL[22m v12.59.0[39m  [2mplugin[22m [1mv3.1.0[22m
+
+  [32m➜[39m  [1mAPP_URL[22m: [36mhttp://127.0.0.1:[1m8000[22m[39m
+[2m9:49:28 PM[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m9:49:28 PM[22m [36m[1m[vite][22m[39m server restarted.
+
+  [31m[1mLARAVEL[22m v12.59.0[39m  [2mplugin[22m [1mv3.1.0[22m
+
+  [32m➜[39m  [1mAPP_URL[22m: [36mhttp://127.0.0.1:[1m8000[22m[39m

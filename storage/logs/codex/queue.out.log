@@ -1,3 +1,25 @@
 
    INFO  Processing jobs from the [default] queue.  
 
+
+   Symfony\Component\Process\Exception\ProcessTimedOutException 
+
+  The process "C:\php83\php.exe artisan queue:work --once "--name=default" "--queue=default" "--backoff=0" "--memory=128" "--sleep=3" "--tries=1"" exceeded the timeout of 60 seconds.
+
+  at vendor\symfony\process\Process.php:1215
+    1211▕ 
+    1212▕         if (null !== $this->timeout && $this->timeout < microtime(true) - $this->starttime) {
+    1213▕             $this->stop(0);
+    1214▕ 
+  ➜ 1215▕             throw new ProcessTimedOutException($this, ProcessTimedOutException::TYPE_GENERAL);
+    1216▕         }
+    1217▕ 
+    1218▕         if (null !== $this->idleTimeout && $this->idleTimeout < microtime(true) - $this->lastOutputTime) {
+    1219▕             $this->stop(0);
+
+  1   vendor\symfony\process\Process.php:481
+      Symfony\Component\Process\Process::checkTimeout()
+
+  2   vendor\symfony\process\Process.php:265
+      Symfony\Component\Process\Process::wait()
+

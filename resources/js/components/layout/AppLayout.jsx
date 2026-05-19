@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
 import Sidebar from "./Sidebar";
 import HelpDeskFloatingButton from "./HelpDeskFloatingButton";
+import SystemChatbot from "@/components/chat/SystemChatbot";
 import DashboardSummaryBar from "./DashboardSummaryBar";
 import NotificationBridge from "./NotificationBridge";
 import PageBreadcrumbs from "./PageBreadcrumbs";
@@ -137,6 +138,7 @@ export default function AppLayout() {
       </main>
 
       <NotificationBridge />
+      <SystemChatbot />
       <HelpDeskFloatingButton />
     </div>
   );

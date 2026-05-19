@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { AlertTriangle, Loader2, ShieldAlert, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function ActionWarningModal({
   open,
@@ -61,9 +61,8 @@ export default function ActionWarningModal({
           {requirePassword && (
             <div className="space-y-2">
               <Label htmlFor="confirm-password">Re-enter your password</Label>
-              <Input
+              <PasswordInput
                 id="confirm-password"
-                type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="Required before archiving records"

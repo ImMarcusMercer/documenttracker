@@ -69,7 +69,7 @@ export default function SystemChatbot() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className="fixed bottom-24 right-5 z-50">
       {isOpen && (
         <div className="mb-3 w-[calc(100vw-2rem)] max-w-md rounded-2xl border bg-background shadow-2xl overflow-hidden">
           <div className="flex items-center justify-between border-b px-4 py-3 bg-muted/40">
@@ -153,9 +153,10 @@ export default function SystemChatbot() {
         type="button"
         aria-label="Open DocuTracker Assistant"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="h-14 w-14 rounded-full shadow-xl text-xl font-bold"
+        className="h-14 rounded-full shadow-xl px-5 gap-2"
       >
-        {isOpen ? <X className="w-6 h-6" /> : "?"}
+        {isOpen ? <X className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
+        <span className="hidden sm:inline">{isOpen ? "Close AI Chat" : "AI Assistant"}</span>
       </Button>
     </div>
   );
