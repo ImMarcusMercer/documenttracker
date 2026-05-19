@@ -12,6 +12,11 @@ class DocumentAccess
         return strtoupper((string) $user->role) === 'RECEIVING';
     }
 
+    public static function canUseOcr(User $user): bool
+    {
+        return (bool) $user->is_active && strtolower((string) ($user->status ?: 'active')) === 'active';
+    }
+
     /**
      * v2.0 policy: every authenticated active DocTracker user can open the All Documents
      * list, document detail page, and attached document files for tracking transparency.

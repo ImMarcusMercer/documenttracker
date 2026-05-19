@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   const checkUserAuth = async () => {
     try {
       setIsLoadingAuth(true);
-      const currentUser = await base44.auth.me();
+      const currentUser = await base44.auth.me({ force: true });
       setSessionPolicy(currentUser?.session_policy || sessionPolicy);
       setUser(currentUser);
       setIsAuthenticated(true);

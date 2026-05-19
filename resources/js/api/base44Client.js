@@ -29,6 +29,10 @@ const filterItems = (items, filters = {}) =>
 const csrfToken = () =>
   document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
 
+let meCache = null;
+let meCacheExpiresAt = 0;
+let meRequestPromise = null;
+
 const normalizeError = async (response) => {
   let payload = null;
 
@@ -164,9 +168,33 @@ export const base44 = {
     async resetPassword(payload) {
       return request("/reset-password", { method: "POST", body: payload });
     },
-    async me() {
+    async me({ force = false } = {}) {
+      if (force) {
+        meCache = null;
+        meCacheExpiresAt = 0;
+      }
+
+      if (!force && meCache && Date.now() < meCacheExpiresAt) {
+        return meCache;
+      }
+
+      if (!force && meRequestPromise) {
+        return meRequestPromise;
+      }
+
+      meRequestPromise = (async () => {
       const response = await request("/me");
-      return { ...response.user, session_policy: response.session_policy };
+        const payload = { ...response.user, session_policy: response.session_policy };
+        meCache = payload;
+        meCacheExpiresAt = Date.now() + 10000;
+        return payload;
+      })();
+
+      try {
+        return await meRequestPromise;
+      } finally {
+        meRequestPromise = null;
+      }
     },
     async logout(redirectUrl) {
       try {
@@ -176,6 +204,10 @@ export const base44 = {
           throw error;
         }
       }
+
+      meCache = null;
+      meCacheExpiresAt = 0;
+      meRequestPromise = null;
 
       if (redirectUrl) {
         window.location.href = redirectUrl;
