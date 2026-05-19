@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\ChatbotController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\HelpDeskTicketController;
 use App\Http\Controllers\Api\DocumentActionController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ImportExportController;
@@ -67,6 +68,15 @@ Route::prefix('api/v1')->middleware('throttle:100,1')->group(function () {
 
         Route::get('/documents/{document}/actions', [DocumentActionController::class, 'index'])->name('api.documents.actions.index');
         Route::post('/documents/{document}/actions', [DocumentActionController::class, 'store'])->name('api.documents.actions.store');
+
+        Route::get('/helpdesk/tickets', [HelpDeskTicketController::class, 'index'])->name('api.helpdesk.tickets.index');
+        Route::post('/helpdesk/tickets', [HelpDeskTicketController::class, 'store'])->name('api.helpdesk.tickets.store');
+        Route::get('/helpdesk/tickets/stats', [HelpDeskTicketController::class, 'stats'])->name('api.helpdesk.tickets.stats');
+        Route::get('/helpdesk/tickets/{ticket}', [HelpDeskTicketController::class, 'show'])->name('api.helpdesk.tickets.show')->withTrashed();
+        Route::patch('/helpdesk/tickets/{ticket}', [HelpDeskTicketController::class, 'update'])->name('api.helpdesk.tickets.update')->withTrashed();
+        Route::delete('/helpdesk/tickets/{ticket}', [HelpDeskTicketController::class, 'destroy'])->name('api.helpdesk.tickets.destroy');
+        Route::post('/helpdesk/tickets/{ticket}/restore', [HelpDeskTicketController::class, 'restore'])->name('api.helpdesk.tickets.restore');
+        Route::post('/helpdesk/tickets/{ticket}/messages', [HelpDeskTicketController::class, 'reply'])->name('api.helpdesk.tickets.reply')->withTrashed();
 
         Route::get('/notifications', [NotificationController::class, 'index'])->name('api.notifications.index');
         Route::get('/notifications/stream', [NotificationController::class, 'stream'])->name('api.notifications.stream');

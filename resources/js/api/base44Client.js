@@ -428,6 +428,39 @@ export const base44 = {
     },
   },
 
+  helpdesk: {
+    async list(params = {}) {
+      const response = await request(`/helpdesk/tickets${queryString(params)}`);
+      return { data: response.data || [], meta: response.meta || {} };
+    },
+    async stats() {
+      return getItem('/helpdesk/tickets/stats');
+    },
+    async create(payload = {}) {
+      const response = await request('/helpdesk/tickets', { method: 'POST', body: payload });
+      return response.data;
+    },
+    async get(id) {
+      return getItem(`/helpdesk/tickets/${id}`);
+    },
+    async update(id, payload = {}) {
+      const response = await request(`/helpdesk/tickets/${id}`, { method: 'PATCH', body: payload });
+      return response.data;
+    },
+    async reply(id, payload = {}) {
+      const response = await request(`/helpdesk/tickets/${id}/messages`, { method: 'POST', body: payload });
+      return response.data;
+    },
+    async archive(id) {
+      const response = await request(`/helpdesk/tickets/${id}`, { method: 'DELETE' });
+      return response.data;
+    },
+    async restore(id) {
+      const response = await request(`/helpdesk/tickets/${id}/restore`, { method: 'POST' });
+      return response.data;
+    },
+  },
+
   developer: {
     async simulations() {
       return getItem("/developer/simulations");

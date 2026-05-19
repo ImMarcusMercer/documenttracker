@@ -13,7 +13,8 @@ import {
   Menu,
   ShieldCheck,
   UserCircle,
-  Code2
+  Code2,
+  LifeBuoy
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
@@ -23,6 +24,7 @@ const navItems = [
   { label: "New Document", icon: FilePlus, path: "/documents/new" },
   { label: "Notifications", icon: Bell, path: "/notifications" },
   { label: "My Profile", icon: UserCircle, path: "/profile" },
+  { label: "Need Help", icon: LifeBuoy, path: "/helpdesk" },
 ];
 
 export default function Sidebar({ className, onNavigate, isOpen, onToggle }) {

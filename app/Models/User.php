@@ -80,6 +80,16 @@ class User extends Authenticatable
         return $this->hasMany(DocumentAction::class, 'from_user_id');
     }
 
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class, 'requester_user_id');
+    }
+
+    public function assignedSupportTickets()
+    {
+        return $this->hasMany(SupportTicket::class, 'assigned_to_id');
+    }
+
     public function hasPermission(string $module, string $action): bool
     {
         if (strtoupper((string) $this->role) === 'ADMIN') {

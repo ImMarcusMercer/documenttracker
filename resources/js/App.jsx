@@ -18,6 +18,7 @@ import Notifications from './pages/Notifications';
 import AdminConsole from './pages/AdminConsole';
 import Profile from './pages/Profile';
 import DeveloperConsole from './pages/DeveloperConsole';
+import HelpDesk from './pages/HelpDesk';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated } = useAuth();
@@ -61,6 +62,8 @@ const AuthenticatedApp = () => {
           <Route path="/documents/:id" element={<DocumentDetail />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/helpdesk" element={<HelpDesk />} />
+          <Route path="/help" element={<Navigate to="/helpdesk" replace />} />
           <Route path="/users" element={<UserManagement />} />
           <Route path="/admin" element={<AdminConsole />} />
           <Route path="/developer" element={<DeveloperConsole />} />

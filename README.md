@@ -1,13 +1,13 @@
-# DocuTracker v2.6
+# DocuTracker v2.7
 
-DocTracker is a Laravel 12 + PostgreSQL + React/Vite web application for document receiving, routing, tracking, release monitoring, reporting, and audit control. Version 2.6 extends the criteria-oriented build with security/performance hardening, a live Admin Security Monitor for demoing attack-simulation results, response-time monitoring, input sanitization, stronger security headers, dark mode, breadcrumbs, skeleton loading states, and additional responsive/accessibility refinements while preserving the PostgreSQL-only setup.
+DocTracker is a Laravel 12 + PostgreSQL + React/Vite web application for document receiving, routing, tracking, release monitoring, reporting, and audit control. Version 2.7 extends the criteria-oriented build with a ticket-based Help Desk module, a new Help Desk role, system-wide Need Help access points, Help Desk notifications, ticket replies, agent controls, ticket audit logs, and support workflow settings while preserving the PostgreSQL-only setup.
 
 ## Project Information
 
 | Item | Details |
 |---|---|
 | Project name | DocTracker |
-| Version | v2.6 |
+| Version | v2.7 |
 | Backend | Laravel 12, PHP 8.2+ |
 | Frontend | React 18, Vite, Tailwind CSS, shadcn-style UI components |
 | Database | PostgreSQL only |
@@ -40,7 +40,22 @@ Manual office document routing often causes delayed processing, unclear current 
 | Site settings | Branding, email template metadata, security, backup schedule/retention, notification defaults, maintenance mode/message, API placeholders, reports, audit, developer, and system-warning settings seeded in DB; Admin Console has structured quick-edit controls plus manual group/key/value editing. |
 | Security/performance | API throttle of 100 requests/minute, Laravel ORM/parameter binding, CSRF token on AJAX, hashed passwords, CSP/security headers, input sanitization, response-time headers, slow/error request audit logging, live performance cache metrics, PostgreSQL default config. |
 | UI/UX | Responsive phone/tablet/desktop layout, compact live dashboard strip, organized section cards, mobile-safe toast width, clean sidebar, breadcrumbs, dark mode toggle, skeleton loading states, charts, empty states, print styling, accessible login/reset forms, social auth placeholders, profile/avatar editing UI, and profile notification preferences. |
-| Bonus | Optional OCR and Gemini assistant support remain environment-backed and disabled unless configured; Developer role includes safe demonstrations for SQL injection, XSS, broken sessions, brute force, network probing, social engineering, DoS/DDoS, privilege escalation, and lateral movement as audit-log simulations only. |
+| Bonus | Help Desk ticketing replaces immediate chat for support requests; optional OCR and Gemini assistant support remain environment-backed and disabled unless configured; Developer role includes safe demonstrations for SQL injection, XSS, broken sessions, brute force, network probing, social engineering, DoS/DDoS, privilege escalation, and lateral movement as audit-log simulations only. |
+
+## v2.7 Additions
+
+- Added a new **Help Desk** role with the seeded account `helpdesk@docutracker.local` / `Password123!`.
+- Added support-ticket permissions: create, read, update, and manage. Admins retain full access; Help Desk users manage support workflow; regular users can submit and view their own tickets.
+- Added `/helpdesk` and `/help` routes. The page adapts into **Need Help** mode for regular users and **Help Desk Console** mode for Help Desk/Admin/Developer users.
+- Added a sidebar **Need Help** access point and a floating **Need Help?** button on authenticated pages so users do not need live chat to request assistance.
+- Replaced the immediate floating chat entry point with ticket-based support access. The previous assistant endpoint remains server-side but is no longer presented as the primary Help/Chat UI.
+- Added backend tables for `support_tickets` and `support_ticket_messages`, including ticket number, requester, assignee, subject, category, priority, status, resolution, message thread, internal notes, timestamps, and soft archive support.
+- Added Help Desk APIs for ticket listing, ticket creation, ticket details, agent updates, replies, archive/restore, and dashboard stats.
+- Added support-ticket notification logic. New tickets notify Help Desk/Admin users, Help Desk replies notify the requester, and requester replies notify Help Desk users. Email delivery uses existing `.env` mail configuration when enabled by user notification preferences.
+- Added audit logging for ticket creation, viewing, updates, replies, internal notes, archive, and restore actions.
+- Added Help Desk settings seeds under the `helpdesk` group for enabling the feature, email-on-new-ticket behavior, default priority, and normal-priority SLA display.
+- Updated production build assets after implementing the ticketing module.
+
 
 
 
@@ -131,6 +146,7 @@ After running `php artisan migrate --seed`, these accounts are available:
 |---|---|---|
 | Admin | `admin@docutracker.local` | `Password123!` |
 | Developer | `developer@docutracker.local` | `Password123!` |
+| Help Desk | `helpdesk@docutracker.local` | `Password123!` |
 | Receiving Office | `maria.santos@docutracker.local` | `Password123!` |
 | Procurement | `cassy.delacruz@docutracker.local` | `Password123!` |
 | Communications | `elvie.reyes@docutracker.local` | `Password123!` |

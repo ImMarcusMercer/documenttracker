@@ -36,6 +36,10 @@ class DatabaseSeeder extends Seeder
             ['backups', 'manage', 'Create and download verified backups'],
             ['notifications', 'read', 'View own notifications'],
             ['developer_tools', 'manage', 'Access safe developer diagnostics and log-only attack simulations'],
+            ['support_tickets', 'create', 'Submit Help Desk support tickets'],
+            ['support_tickets', 'read', 'View owned or assigned Help Desk tickets'],
+            ['support_tickets', 'update', 'Reply to and update Help Desk tickets'],
+            ['support_tickets', 'manage', 'Manage all Help Desk tickets and support workflow'],
         ];
 
         foreach ($permissions as [$module, $action, $description]) {
@@ -55,6 +59,7 @@ class DatabaseSeeder extends Seeder
             'COMMS' => ['Communications', 'Processes communication letters.'],
             'RECORDS' => ['Records Section', 'Maintains communication and records trail.'],
             'DEVELOPER' => ['Developer', 'Technical support role for diagnostics, audit demonstrations, and safe security simulations.'],
+            'HELPDESK' => ['Help Desk', 'Handles user support tickets, issue triage, ticket replies, and resolution tracking.'],
         ];
 
         foreach ($roles as $name => [$displayName, $description]) {
@@ -65,9 +70,10 @@ class DatabaseSeeder extends Seeder
 
             $allowed = match ($name) {
                 'ADMIN' => Permission::pluck('id')->all(),
-                'DEVELOPER' => Permission::whereIn('module_name', ['developer_tools', 'audit_logs', 'reports', 'notifications'])->pluck('id')->all(),
-                'RECEIVING' => Permission::whereIn('module_name', ['documents', 'notifications'])->pluck('id')->all(),
-                default => Permission::whereIn('module_name', ['documents', 'notifications'])->whereIn('action_name', ['read', 'update'])->pluck('id')->all(),
+                'DEVELOPER' => Permission::whereIn('module_name', ['developer_tools', 'audit_logs', 'reports', 'notifications', 'support_tickets'])->pluck('id')->all(),
+                'HELPDESK' => Permission::whereIn('module_name', ['support_tickets', 'notifications'])->pluck('id')->all(),
+                'RECEIVING' => Permission::whereIn('module_name', ['documents', 'notifications', 'support_tickets'])->whereIn('action_name', ['create', 'read'])->pluck('id')->all(),
+                default => Permission::whereIn('module_name', ['documents', 'notifications', 'support_tickets'])->whereIn('action_name', ['read', 'update', 'create'])->pluck('id')->all(),
             };
 
             $role->permissions()->sync($allowed);
@@ -87,6 +93,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Vanesa Gutierrez', 'email' => 'vanesa.gutierrez@docutracker.local', 'role' => 'RELEASING', 'section' => 'PROCUREMENT'],
             ['name' => 'System Admin', 'email' => 'admin@docutracker.local', 'role' => 'ADMIN', 'section' => 'GENERAL'],
             ['name' => 'System Developer', 'email' => 'developer@docutracker.local', 'role' => 'DEVELOPER', 'section' => 'TECHNICAL'],
+            ['name' => 'Help Desk Officer', 'email' => 'helpdesk@docutracker.local', 'role' => 'HELPDESK', 'section' => 'TECHNICAL'],
         ];
 
         foreach ($users as $user) {
@@ -156,6 +163,10 @@ class DatabaseSeeder extends Seeder
             ['notifications', 'default_channels', ['in_app' => true, 'popup' => true, 'email' => true, 'sms' => false], 'json', 'Default notification delivery channels.'],
             ['notifications', 'realtime_enabled', ['value' => true], 'boolean', 'Enable Server-Sent Events for notification refresh when the browser supports it.'],
             ['notifications', 'popup_duration_seconds', ['value' => 5], 'integer', 'Bottom-left popup duration for in-app notifications.'],
+            ['helpdesk', 'enabled', ['value' => true], 'boolean', 'Enable the Help Desk ticketing access point for authenticated users.'],
+            ['helpdesk', 'email_on_new_ticket', ['value' => true], 'boolean', 'Send Help Desk ticket notifications through configured mail when user preferences allow email.'],
+            ['helpdesk', 'default_priority', ['value' => 'normal'], 'string', 'Default Help Desk ticket priority.'],
+            ['helpdesk', 'sla_hours_normal', ['value' => 24], 'integer', 'Target response time in hours for normal Help Desk tickets.'],
             ['email', 'smtp_mailer', ['value' => env('MAIL_MAILER', 'log')], 'string', 'SMTP mailer used for notification templates and email delivery.'],
             ['email', 'smtp_host', ['value' => env('MAIL_HOST', '127.0.0.1')], 'string', 'SMTP host. Runtime still uses .env mail configuration.'],
             ['email', 'smtp_port', ['value' => env('MAIL_PORT', 2525)], 'integer', 'SMTP port. Runtime still uses .env mail configuration.'],
