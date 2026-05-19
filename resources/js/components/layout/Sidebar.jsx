@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/AuthContext";
 import { 
   LayoutDashboard, 
   FileText, 
@@ -29,6 +30,7 @@ const navItems = [
 
 export default function Sidebar({ className, onNavigate, isOpen, onToggle }) {
   const location = useLocation();
+  const { logout, isLoggingOut } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isDeveloper, setIsDeveloper] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -155,14 +157,16 @@ export default function Sidebar({ className, onNavigate, isOpen, onToggle }) {
       {/* Logout */}
       <div className="p-4 border-t border-sidebar-border">
         <button
+          type="button"
+          disabled={isLoggingOut}
           onClick={() => {
             if (onNavigate) onNavigate();
-            base44.auth.logout('/login');
+            logout(true);
           }}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-sidebar-accent hover:text-white transition-all w-full text-base font-medium"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-sidebar-accent hover:text-white transition-all w-full text-base font-medium disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <LogOut className="w-5 h-5" />
-          <span>Logout</span>
+          <span>{isLoggingOut ? "Signing out..." : "Logout"}</span>
         </button>
       </div>
     </aside>

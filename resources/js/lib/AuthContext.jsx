@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isLoadingPublicSettings, setIsLoadingPublicSettings] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [authError, setAuthError] = useState(null);
   const [appPublicSettings, setAppPublicSettings] = useState(null);
   const [sessionPolicy, setSessionPolicy] = useState({
@@ -64,13 +65,34 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async (shouldRedirect = true) => {
+    if (isLoggingOut) {
+      return;
+    }
+
+    setIsLoggingOut(true);
     setUser(null);
     setIsAuthenticated(false);
 
-    if (shouldRedirect) {
-      await base44.auth.logout('/login');
-    } else {
+    try {
+      if (shouldRedirect) {
+        await base44.auth.logout('/login');
+        return;
+      }
+
       await base44.auth.logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+
+      if (shouldRedirect) {
+        base44.auth.redirectToLogin();
+        return;
+      }
+
+      throw error;
+    } finally {
+      if (!shouldRedirect) {
+        setIsLoggingOut(false);
+      }
     }
   };
 
@@ -85,6 +107,7 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated,
       isLoadingAuth,
       isLoadingPublicSettings,
+      isLoggingOut,
       authError,
       appPublicSettings,
       sessionPolicy,
