@@ -1,0 +1,81 @@
+{
+  "seed_version": "2026-03-25-clean-slate-v6",
+  "currentUserEmail": "",
+  "users": [
+    {
+      "id": "u-receiving-maria",
+      "full_name": "Maria Santos",
+      "email": "maria.santos@docutracker.local",
+      "role": "RECEIVING",
+      "section": "GENERAL",
+      "created_date": "2026-03-01T08:00:00.000Z"
+    },
+    {
+      "id": "u-procurement-cassy",
+      "full_name": "Cassy Dela Cruz",
+      "email": "cassy.delacruz@docutracker.local",
+      "role": "PROCUREMENT",
+      "section": "PROCUREMENT",
+      "created_date": "2026-03-01T08:05:00.000Z"
+    },
+    {
+      "id": "u-comms-elvie",
+      "full_name": "Elvie Reyes",
+      "email": "elvie.reyes@docutracker.local",
+      "role": "COMMS",
+      "section": "COMMS",
+      "created_date": "2026-03-01T08:10:00.000Z"
+    },
+    {
+      "id": "u-records-mila",
+      "full_name": "Mila S. Torres",
+      "email": "mila.torres@docutracker.local",
+      "role": "RECORDS",
+      "section": "COMMS",
+      "created_date": "2026-03-01T08:11:00.000Z"
+    },
+    {
+      "id": "u-mobilization-joyce",
+      "full_name": "Joyce Manalo",
+      "email": "joyce.manalo@docutracker.local",
+      "role": "MOBILIZATION",
+      "section": "MOBILIZATION",
+      "created_date": "2026-03-01T08:12:00.000Z"
+    },
+    {
+      "id": "u-mayor-amie",
+      "full_name": "Hon. Amie G. Galaro",
+      "email": "amie.galaro@docutracker.local",
+      "role": "MAYOR",
+      "section": "GENERAL",
+      "created_date": "2026-03-01T08:15:00.000Z"
+    },
+    {
+      "id": "u-oic-raul",
+      "full_name": "Greizel Galario-Fernandez",
+      "email": "raul.mendoza@docutracker.local",
+      "role": "MAYOR",
+      "section": "GENERAL",
+      "created_date": "2026-03-01T08:16:00.000Z"
+    },
+    {
+      "id": "u-releasing-vanesa",
+      "full_name": "Vanesa Gutierrez",
+      "email": "vanesa.gutierrez@docutracker.local",
+      "role": "RELEASING",
+      "section": "PROCUREMENT",
+      "created_date": "2026-03-01T08:20:00.000Z"
+    },
+    {
+      "id": "u-admin-system",
+      "full_name": "System Admin",
+      "email": "admin@docutracker.local",
+      "role": "ADMIN",
+      "section": "GENERAL",
+      "created_date": "2026-03-01T08:25:00.000Z"
+    }
+  ],
+  "documents": [],
+  "actions": [],
+  "notifications": []
+}
