@@ -114,6 +114,13 @@ export default function Profile() {
     Boolean(avatar) ||
     Boolean(form.mfa_enabled) !== Boolean(profile.mfa_enabled)
   ));
+
+  useEffect(() => {
+    if (isDirty) {
+      setHasSaved(false);
+    }
+  }, [isDirty]);
+
   useUnsavedChanges(isDirty && !hasSaved);
 
   const updateField = (key, value) => {

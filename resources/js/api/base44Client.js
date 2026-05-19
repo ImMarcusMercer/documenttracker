@@ -264,10 +264,20 @@ export const base44 = {
     },
     async update(payload = {}) {
       const formData = new FormData();
+      formData.append("_method", "PATCH");
+
       Object.entries(payload).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) formData.append(key, value);
+        if (value === undefined || value === null) return;
+
+        // Laravel's multipart boolean validation expects 1/0 values.
+        if (typeof value === "boolean") {
+          formData.append(key, value ? "1" : "0");
+          return;
+        }
+
+        formData.append(key, value);
       });
-      const response = await request("/profile", { method: "PATCH", formData });
+      const response = await request("/profile", { method: "POST", formData });
       return response.data;
     },
   },
