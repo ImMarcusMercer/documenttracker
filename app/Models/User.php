@@ -60,6 +60,21 @@ class User extends Authenticatable
         );
     }
 
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, array $attributes) {
+                $path = $attributes['avatar_path'] ?? null;
+
+                if ($path) {
+                    return '/storage/'.ltrim((string) $path, '/');
+                }
+
+                return $value;
+            }
+        );
+    }
+
     public function roleRecord()
     {
         return $this->belongsTo(Role::class, 'role_id');
