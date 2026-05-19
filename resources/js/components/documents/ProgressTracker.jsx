@@ -16,6 +16,7 @@ export default function ProgressTracker({ status, document }) {
   const currentIndex = statusOrder[status] ?? 0;
   const isReturned = status === "Returned";
   const steps = getFlowSteps(document);
+  const isTrackingComplete = !isReturned && currentIndex >= steps.length - 1;
 
   return (
     <div className="w-full">
@@ -26,8 +27,8 @@ export default function ProgressTracker({ status, document }) {
       )}
       <div className="flex items-center justify-between">
         {steps.map((step, index) => {
-          const isCompleted = currentIndex > index;
-          const isCurrent = currentIndex === index && !isReturned;
+          const isCompleted = isTrackingComplete ? currentIndex >= index : currentIndex > index;
+          const isCurrent = !isTrackingComplete && currentIndex === index && !isReturned;
 
           return (
             <div key={step.key} className="flex items-center flex-1 last:flex-initial">
@@ -56,7 +57,7 @@ export default function ProgressTracker({ status, document }) {
               {index < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 mx-2 rounded-full ${
-                    currentIndex > index ? "bg-green-500" : "bg-border"
+                    isTrackingComplete || currentIndex > index ? "bg-green-500" : "bg-border"
                   }`}
                 />
               )}
