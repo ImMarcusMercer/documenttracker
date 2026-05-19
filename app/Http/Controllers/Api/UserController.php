@@ -21,7 +21,10 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $this->ensureAdmin($request);
+        $isAdmin = strtoupper((string) $request->user()->role) === 'ADMIN';
+        if ($request->boolean('paginate')) {
+            abort_unless($isAdmin, 403);
+        }
 
         $query = $this->userQuery($request);
 
@@ -46,7 +49,7 @@ class UserController extends Controller
             'data' => $query
                 ->limit(5000)
                 ->get()
-                ->map(fn (User $user) => $this->serializeUser($user))
+                ->map(fn (User $user) => $isAdmin ? $this->serializeUser($user) : $this->serializeDirectoryUser($user))
                 ->all(),
         ]);
     }
@@ -612,6 +615,20 @@ class UserController extends Controller
             'last_login_at' => optional($user->last_login_at)?->toISOString(),
             'last_seen_at' => optional($user->last_seen_at)?->toISOString(),
             'created_date' => optional($user->created_at)?->toISOString(),
+        ];
+    }
+
+    private function serializeDirectoryUser(User $user): array
+    {
+        return [
+            'id' => (string) $user->id,
+            'full_name' => $user->name,
+            'email' => $user->email,
+            'role' => strtoupper((string) $user->role),
+            'role_name' => $user->roleRecord?->display_name,
+            'section' => strtoupper((string) $user->section),
+            'status' => $user->status ?: ((bool) $user->is_active ? 'active' : 'inactive'),
+            'is_active' => (bool) $user->is_active,
         ];
     }
 }

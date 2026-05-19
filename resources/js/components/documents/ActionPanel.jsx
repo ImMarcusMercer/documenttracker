@@ -149,10 +149,6 @@ export default function ActionPanel({ document, currentUser, onActionDone }) {
   };
 
   const doMarkReceived = async () => {
-    await base44.entities.Document.update(document.id, {
-      physical_received: true,
-      status: "Received",
-    });
     await base44.entities.DocumentAction.create({
       document_id: document.id,
       action_type: "Received",
@@ -178,22 +174,6 @@ export default function ActionPanel({ document, currentUser, onActionDone }) {
       notes: forwardNotes || `Forwarded to ${toUser.full_name}`,
       new_status: newStatus,
     });
-    await base44.entities.Document.update(document.id, {
-      status: newStatus,
-      current_holder: toUser.email,
-      current_holder_name: toUser.full_name,
-      current_holder_role: toUser.role?.toUpperCase(),
-      forwarded_to: toUser.full_name,
-      physical_received: false, // reset for next holder
-    });
-    await createNotification({
-      recipientEmail: toUser.email,
-      recipientName: toUser.full_name,
-      document,
-      type: "FORWARDED",
-      title: "Document forwarded to you",
-      message: `${document.control_number || "Document"} was forwarded by ${currentUser.full_name}.`,
-    });
   };
 
   const doReturn = async () => {
@@ -212,15 +192,6 @@ export default function ActionPanel({ document, currentUser, onActionDone }) {
       notes: returnReason,
       new_status: "Returned",
     });
-    await base44.entities.Document.update(document.id, {
-      status: "Returned",
-      return_reason: returnReason,
-      current_holder: targetUser?.email || document.current_holder,
-      current_holder_name: targetUser?.full_name || latestSender?.name || document.current_holder_name,
-      current_holder_role: targetUser?.role?.toUpperCase() || document.current_holder_role,
-      forwarded_to: targetUser?.full_name || latestSender?.name || document.forwarded_to,
-      physical_received: false,
-    });
     await createNotification({
       recipientEmail: targetUser?.email || latestSender?.email,
       recipientName: targetUser?.full_name || latestSender?.name,
@@ -232,10 +203,6 @@ export default function ActionPanel({ document, currentUser, onActionDone }) {
   };
 
   const doSign = async () => {
-    await base44.entities.Document.update(document.id, {
-      status: "Signed",
-      physical_received: true,
-    });
     await base44.entities.DocumentAction.create({
       document_id: document.id,
       action_type: "Signed",
@@ -248,10 +215,6 @@ export default function ActionPanel({ document, currentUser, onActionDone }) {
   };
 
   const doRelease = async () => {
-    await base44.entities.Document.update(document.id, {
-      status: "Released",
-      released_date: new Date().toISOString().split("T")[0],
-    });
     await base44.entities.DocumentAction.create({
       document_id: document.id,
       action_type: "Released",

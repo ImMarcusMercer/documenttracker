@@ -57,6 +57,7 @@ class DocumentActionController extends Controller
 
         $fromUser = !empty($data['from_user']) ? User::query()->where('email', $data['from_user'])->first() : $request->user();
         $toUser = !empty($data['to_user']) ? User::query()->where('email', $data['to_user'])->first() : null;
+        $actionType = strtolower(trim((string) $data['action_type']));
 
         $oldValues = $document->only(['status', 'current_holder', 'current_holder_name', 'current_holder_role']);
 
@@ -72,17 +73,49 @@ class DocumentActionController extends Controller
             'new_status' => $data['new_status'] ?? null,
         ]);
 
-        if (!empty($data['new_status'])) {
-            $document->status = $data['new_status'];
+        if ($actionType === 'received') {
+            $document->status = $data['new_status'] ?? 'Received';
+            $document->physical_received = true;
         }
 
-        if ($toUser) {
+        if ($actionType === 'signed') {
+            $document->status = $data['new_status'] ?? 'Signed';
+            $document->physical_received = true;
+        }
+
+        if ($actionType === 'released') {
+            $document->status = $data['new_status'] ?? 'Released';
+            $document->released_date = $document->released_date ?: now()->toDateString();
+        }
+
+        if ($actionType === 'returned') {
+            $document->status = $data['new_status'] ?? 'Returned';
+            $document->return_reason = $data['notes'] ?? null;
+            $document->physical_received = false;
+        }
+
+        if ($actionType === 'forwarded') {
+            $document->status = $data['new_status'] ?? 'Forwarded';
+            $document->physical_received = false;
+            $document->return_reason = null;
+        }
+
+        if (
+            $toUser
+            && in_array($actionType, ['forwarded', 'returned'], true)
+        ) {
             $document->current_holder_id = $toUser->id;
             $document->current_holder = $toUser->email;
             $document->current_holder_name = $toUser->name;
             $document->current_holder_role = strtoupper((string) $toUser->role);
             $document->forwarded_to = $toUser->name;
+        }
 
+        if (!empty($data['new_status']) && !in_array($actionType, ['received', 'signed', 'released', 'returned', 'forwarded'], true)) {
+            $document->status = $data['new_status'];
+        }
+
+        if ($toUser && $actionType === 'forwarded') {
             NotificationDispatcher::notifyUser($toUser, [
                 'document_id' => $document->id,
                 'control_number' => $document->control_number,
